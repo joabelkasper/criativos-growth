@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Criativos Growth — Resultados{% endblock %}
+
+{% block content %}
+<section class="results-section">
+    <div class="results-header">
+        <div>
+            <h2>Criativos gerados</h2>
+            <p>Campanha: <strong>{{ result.brief.product_name }}</strong> &mdash;
+               {{ result.creatives | length }} criativos em {{ result.brief.num_variations }} variações</p>
+        </div>
+        <a href="/" class="btn-back">Novo projeto</a>
+    </div>
+
+    {% set ns = namespace(current_variation="") %}
+    {% for creative in result.creatives %}
+        {% set variation_id = creative.ad_copy.hook %}
+        {% if variation_id != ns.current_variation %}
+            {% if ns.current_variation != "" %}
+                </div></div>
+            {% endif %}
+            {% set ns.current_variation = variation_id %}
+            <div class="variation-group">
+                <div class="variation-header">
+                    <h3>Variação {{ loop.index }}</h3>
+                    <div class="copy-preview">
+                        <p class="copy-hook">{{ creative.ad_copy.hook }}</p>
+                        <p class="copy-headline">{{ creative.ad_copy.headline }}</p>
+                        <p class="copy-body">{{ creative.ad_copy.body }}</p>
+                        <p class="copy-cta">{{ creative.ad_copy.cta }}</p>
+                    </div>
+                </div>
+                <div class="creatives-grid">
+        {% endif %}
+
+        <div class="creative-card">
+            <div class="creative-meta">
+                <span class="badge platform">{{ creative.platform }}</span>
+                <span class="badge placement">{{ creative.placement }}</span>
+                <span class="badge size">{{ creative.width }}x{{ creative.height }}</span>
+            </div>
+            <div class="creative-image-wrapper">
+                <img src="/creative/{{ result.campaign_id }}/{{ creative.image_path.split('/')[-1] }}"
+                     alt="{{ creative.format_name }}"
+                     loading="lazy">
+            </div>
+            <p class="format-name">{{ creative.format_name }}</p>
+        </div>
+    {% endfor %}
+    {% if result.creatives %}
+        </div></div>
+    {% endif %}
+</section>
+{% endblock %}

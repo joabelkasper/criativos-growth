@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Criativos Growth — Novo Projeto{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h2>Novo Projeto de Criativos</h2>
+    <p class="form-description">Preencha o briefing abaixo para gerar múltiplas variações de criativos para suas campanhas.</p>
+
+    <form action="/generate" method="post" id="briefForm">
+        <fieldset>
+            <legend>Produto / Serviço</legend>
+            <div class="form-group">
+                <label for="product_name">Nome do produto</label>
+                <input type="text" id="product_name" name="product_name" required
+                       placeholder="Ex: Curso de Marketing Digital">
+            </div>
+            <div class="form-group">
+                <label for="product_description">Descrição</label>
+                <textarea id="product_description" name="product_description" rows="3" required
+                          placeholder="Descreva o produto, benefícios principais e diferenciais"></textarea>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Público e Tom</legend>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="target_audience">Público-alvo</label>
+                    <input type="text" id="target_audience" name="target_audience" required
+                           placeholder="Ex: Empreendedores de 25 a 40 anos">
+                </div>
+                <div class="form-group">
+                    <label for="tone">Tom de voz</label>
+                    <select id="tone" name="tone">
+                        <option value="profissional">Profissional</option>
+                        <option value="casual e divertido">Casual e divertido</option>
+                        <option value="urgente e direto">Urgente e direto</option>
+                        <option value="inspirador">Inspirador</option>
+                        <option value="educativo">Educativo</option>
+                        <option value="provocativo">Provocativo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="language">Idioma</label>
+                    <select id="language" name="language">
+                        <option value="pt-BR">Português (BR)</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cta_text">CTA personalizado (opcional)</label>
+                    <input type="text" id="cta_text" name="cta_text"
+                           placeholder="Ex: Comece agora gratuitamente">
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Plataformas e Variações</legend>
+            <div class="form-group">
+                <label>Plataformas</label>
+                <div class="checkbox-group">
+                    {% for key, formats in platforms.items() %}
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="platforms" value="{{ key }}"
+                               {% if key == "meta" %}checked{% endif %}>
+                        <span>{{ formats[0].platform }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="num_variations">Número de variações de copy</label>
+                <select id="num_variations" name="num_variations">
+                    <option value="2">2 variações</option>
+                    <option value="3" selected>3 variações</option>
+                    <option value="5">5 variações</option>
+                    <option value="8">8 variações</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Cores</legend>
+            <div class="form-row colors-row">
+                <div class="form-group">
+                    <label for="primary_color">Cor primária</label>
+                    <div class="color-input">
+                        <input type="color" id="primary_color" name="primary_color" value="#1a1a2e">
+                        <span class="color-hex">#1a1a2e</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="accent_color">Cor de destaque</label>
+                    <div class="color-input">
+                        <input type="color" id="accent_color" name="accent_color" value="#e94560">
+                        <span class="color-hex">#e94560</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="text_color">Cor do texto</label>
+                    <div class="color-input">
+                        <input type="color" id="text_color" name="text_color" value="#ffffff">
+                        <span class="color-hex">#ffffff</span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn-generate" id="submitBtn">
+            Gerar Criativos
+        </button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Update hex display when color pickers change
+    document.querySelectorAll('input[type="color"]').forEach(input => {
+        input.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = e.target.value;
+        });
+    });
+
+    // Loading state on submit
+    document.getElementById('briefForm').addEventListener('submit', () => {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Gerando criativos... aguarde';
+        btn.classList.add('loading');
+    });
+</script>
+{% endblock %}
